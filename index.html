@@ -1,64 +1,200 @@
 <!doctype html>
-<html>
+<html lang="es">
   <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Chat Socket.IO UNA</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-mQ93XqdrpZKrfv57HMQv+/54HpN67WZsEE74z3LFaKz9pa5R0F26vSRPQJl4UFi8" crossorigin="anonymous">
+
+    <!-- Iconos de Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
     <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { font: 13px Helvetica, Arial; }
-      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
-      form input { border: 0; padding: 10px;}
-      form button { width: 10%; background: rgb(130, 224, 255);  border: none; padding: 10px; }
-      #messages { list-style-type: none; margin: 0; padding: 0; }
-      #messages li { padding: 5px 10px; }
-      #messages li:nth-child(odd) { background: #eee; }
-      #messages { margin-bottom: 40px }
-      #nombre, #m { display: inline-block;}
-      #m {width: 69%; margin-right: 4px;}
-      #nombre {width: 20%}
+      body { 
+        font: 16px Helvetica, Arial; 
+        background-color: #f8f9fa;
+        padding-bottom: 80px;
+      }
+
+      .chat-container {
+        max-width: 900px;
+        margin: 30px auto;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      .chat-header {
+        background-color: #007bff;
+        color: white;
+        padding: 15px;
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: bold;
+        position: relative; /* Para mantener el botón logout flotante */
+      }
+
+      #messages {
+        list-style-type: none;
+        margin: 0;
+        padding: 20px;
+        height: 400px;
+        overflow-y: auto;
+        background-color: #f1f1f1;
+      }
+
+      #messages li {
+        padding: 10px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        background-color: #e9ecef;
+        max-width: 70%;
+      }
+
+      #messages li:nth-child(odd) {
+        background-color: #d1e7dd;
+      }
+
+      form {
+        background: #343a40;
+        padding: 10px;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        box-shadow: 0px -3px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      #nombre {
+        width: 10%; /* Más pequeño para el nombre de usuario */
+        border-radius: 20px;
+        padding: 12px;
+        border: none;
+        margin-right: 10px;
+        background-color: rgba(255, 255, 255, 0.9);
+        color: #495057;
+      }
+
+      #m {
+        width: 70%; /* Más ancho para los mensajes */
+        border-radius: 20px;
+        border: none;
+        padding-left: 15px;
+        background-color: rgba(255, 255, 255, 0.9);
+        color: #495057;
+      }
+
+      form button {
+        background-color: #0088cc;
+        color: white;
+        border: none;
+        margin-left: 10px;
+        padding: 12px 20px;
+        border-radius: 50%;
+        font-size: 1.5rem;
+        transition: background-color 0.3s ease;
+      }
+
+      form button:hover {
+        background-color: #00bfff;
+      }
+
+      form button i {
+        margin: 0;
+      }
+
+      form input::placeholder {
+        color: #a0a5b1;
+      }
+
+      /* Estilo para el botón de logout */
+      .logout-btn {
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 30px;
+        font-size: 1rem;
+        transition: background-color 0.3s ease;
+        cursor: pointer;
+      }
+
+      .logout-btn:hover {
+        background-color: #c82333;
+      }
+
+      .logout-btn i {
+        margin-right: 5px; /* Espacio entre el ícono y el texto */
+      }
     </style>
   </head>
   <body>
-    <ul id="messages"></ul>
-    <form action="">
-      <input id="nombre" autocomplete="off" placeholder="Username"/>
-      <input id="m" autocomplete="off" placeholder="Escriba un mensaje" /><button>Send</button>
+
+    <div class="chat-container">
+      <div class="chat-header">
+        UNAChat
+        <!-- Botón de logout con ícono -->
+        <button class="logout-btn" onclick="window.location.href='/logout'">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+      </div>
+      <ul id="messages" class="list-unstyled"></ul>
+    </div>
+
+    <!-- Chat input form -->
+    <form action="" class="d-flex justify-content-center align-items-center">
+      <input id="nombre" class="form-control" autocomplete="off" placeholder="Nombre de usuario" />
+      <input id="m" class="form-control" autocomplete="off" placeholder="Escriba un mensaje" />
+      <!-- Botón de envío con ícono -->
+      <button type="submit" class="btn">
+        <i class="fas fa-paper-plane"></i>
+      </button>
     </form>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76A3fLQpj8e5g1Hc6t4gCkNx5I7HB5B4zjEc3Aht7l0B5T3M3o5MGbGTBh8BbM" crossorigin="anonymous"></script>
+    
+    <!-- Socket.IO and jQuery -->
     <script src="https://cdn.socket.io/4.7.2/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+
     <script>
+      var colorHexTxt = "";
 
-    var colorHexTxt = "";
-
-    // genera colores aleatorios
-    function getRandomColor() {
-        var letters = '0123456789ABCDEF';
-        var color = '#';
-        for (var i = 0; i < 6; i++) {
-          color += letters[Math.floor(Math.random() * 16)];
-        }
-
-        return color;
-     }
+      // genera colores aleatorios
+      function getRandomColor() {
+          var letters = '0123456789ABCDEF';
+          var color = '#';
+          for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+          }
+          return color;
+      }
 
       $(function () {
         var socket = io();
 
         $('form').submit(function(){
 
-          // captura
           var nombreTxt = $('#nombre').val() || "Anonimo";
           var mensajeTxt = $('#m').val();
 
-          if (colorHexTxt == "")
-          {
+          if (colorHexTxt == "") {
             colorHexTxt = getRandomColor();
           }
 
-          // composicion del mensaje
-          var jsonMsg = { nombre:nombreTxt, mensaje: mensajeTxt, color: colorHexTxt};
+          var jsonMsg = { nombre:nombreTxt, mensaje: mensajeTxt, color: colorHexTxt };
 
           // validación de no enviar mensajes vacíos
-          if (mensajeTxt.trim() != undefined && mensajeTxt.trim() != ""){
+          if (mensajeTxt.trim() != "") {
             socket.emit('Evento-Mensaje-Server', JSON.stringify(jsonMsg));
             $('#m').val(''); // Limpiar el campo de texto
           }
@@ -70,7 +206,7 @@
 
           var msgJson =  JSON.parse(msg);
 
-          var mensajeDisplay = "<b style='color:"+ msgJson.color +"'>" + msgJson.nombre + "</b>: " + msgJson.mensaje;
+          var mensajeDisplay = "<b style='color:" + msgJson.color + "'>" + msgJson.nombre + "</b>: " + msgJson.mensaje;
 
           $('#messages').append($('<li>').html(mensajeDisplay));
           window.scrollTo(0, document.body.scrollHeight);
