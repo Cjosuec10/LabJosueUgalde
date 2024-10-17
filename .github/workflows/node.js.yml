@@ -43,6 +43,10 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      # Paso adicional: Otorgar permisos a Mocha
+      - name: Grant permission to Mocha
+        run: chmod +x ./node_modules/.bin/mocha
+
       - name: Run tests
         run: npm test
 
