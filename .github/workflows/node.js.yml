@@ -64,8 +64,8 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Create Docker image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/infosec-2024-una-chat:latest .
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/infosec-chat:latest .
 
       - name: Push Docker image
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/infosec-2024-una-chat:latest
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/infosec-chat:latest
       
