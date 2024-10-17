@@ -16,7 +16,7 @@
   "type": "module",
   "scripts": {
     "start": "env-cmd -f .env.dev node server.js",
-    "test": "mocha"
+    "test": "mocha --experimental-specifier-resolution=node"
   },
   "author": "UNA",
   "license": "MIT",

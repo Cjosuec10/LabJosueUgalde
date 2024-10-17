@@ -1,16 +1,16 @@
-var unalib = require('../unalib/index');
-var assert = require('assert');
+import { is_valid_phone, validateMessage } from '../unalib/index.js';  // Importación nombrada
+import assert from 'assert';
 
 // Pruebas
 describe('unalib validation tests', function() {
 
   describe('Phone number validation', function() {
       it('should return true for a valid phone number (8431-9577)', function() {
-          assert.equal(unalib.is_valid_phone('8431-9577'), true);
+          assert.equal(is_valid_phone('8431-9577'), true);
       });
   });
   
-//Validacion urls
+  // Validación de URLs
   describe('URL validation', function() {
       const testCases = [
           {
@@ -28,7 +28,7 @@ describe('unalib validation tests', function() {
       testCases.forEach(({ description, message, expected }) => {
           it(description, function() {
               const msg = JSON.stringify({ nombre: 'Usuario', mensaje: message });
-              const validMsg = JSON.parse(unalib.validateMessage(msg));
+              const validMsg = JSON.parse(validateMessage(msg));
               assert(validMsg.mensaje.includes(expected));
           });
       });
@@ -37,7 +37,7 @@ describe('unalib validation tests', function() {
   describe('Script injection prevention', function() {
       it('should prevent script injection', function() {
           const msg = JSON.stringify({ nombre: 'Usuario', mensaje: '<script>alert("hack")</script>' });
-          const validMsg = unalib.validateMessage(msg);
+          const validMsg = validateMessage(msg);
           assert(validMsg.includes('&lt;script&gt;'));
       });
   });

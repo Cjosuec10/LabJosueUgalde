@@ -71,6 +71,8 @@ app.set('view engine', 'html');
 app.use("/static", express.static("static"));
 app.use(session({
   cookie: { httpOnly: true },
+  resave: false,  // No volver a guardar la sesión si no ha sido modificada
+  saveUninitialized: false,  // No guardar sesiones no inicializadas
   secret: SECRET
 }));
 
@@ -79,7 +81,7 @@ app.use(auth(config));
 // App routes
 app.get("/", (req, res) => {
   res.render("index");
-});
+});  
 
 
 // Middleware (requiresAuth) for protected route
