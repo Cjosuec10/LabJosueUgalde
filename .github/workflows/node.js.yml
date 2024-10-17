@@ -7,45 +7,53 @@ on:
     branches: [ "master" ]
 
 jobs:
-  build_and_test:
-    # Ejecuta en el último Ubuntu disponible
+  # Job 1: Build
+  build:
     runs-on: ubuntu-latest
-
     steps:
-      # Paso 1: Checkout del código
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Paso 2: Configura la versión de Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18.x'  # Cambia esto si necesitas otra versión
+          node-version: '18.x'
           cache: 'npm'
 
-      # Paso 3: Instalar dependencias
       - name: Install dependencies
         run: npm install
 
-      # Paso 4: Ejecutar el build del proyecto (si corresponde)
       - name: Build project
-        run: npm run build --if-present  # Si tu proyecto tiene un proceso de build
+        run: npm run build --if-present  # Si tienes un proceso de build en tu proyecto
 
-      # Paso 5: Ejecutar las pruebas
-      - name: Run tests
-        run: npm test
-
-  deploy:
-    # Este trabajo depende de que el trabajo anterior de Build y Test haya sido exitoso
-    needs: build_and_test
+  # Job 2: Test (Este depende del Job de Build)
+  test:
+    needs: build  # Esto asegura que el test solo se ejecute si el build fue exitoso
     runs-on: ubuntu-latest
-
     steps:
-      # Paso 6: Checkout del código
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Paso 7: Desplegar al servidor (puedes ajustar este paso según tu despliegue)
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
+
+  # Job 3: Deploy (Este depende del Job de Test)
+  deploy:
+    needs: test  # Esto asegura que el deploy solo ocurra si los tests pasaron
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Deploy to Server via SSH
         uses: appleboy/ssh-action@v0.1.5
         with:
@@ -57,4 +65,4 @@ jobs:
             git pull origin master
             npm install --production
             npm run build --if-present
-            pm2 restart all  # Si usas pm2 para gestionar tu servidor de Node.js
+            pm2 restart all  # Ajusta esto según cómo gestionas tu servidor
