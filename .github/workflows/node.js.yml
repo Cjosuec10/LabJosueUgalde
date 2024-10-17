@@ -78,4 +78,4 @@ jobs:
       # Deploy Docker image to Azure Web App
       - name: Deploy Docker image to Azure Web App
         run: |
-          az webapp config container set --resource-group YOUR_RESOURCE_GROUP --name YOUR_WEBAPP_NAME --docker-custom-image-name ${{ secrets.DOCKER_USERNAME }}/infosec-chat:latest
+          az webapp config container set --resource-group YOUR_RESOURCE_GROUP --name YOUR_WEBAPP_NAME --container-image-name ${{ secrets.DOCKER_USERNAME }}/infosec-chat:latest
