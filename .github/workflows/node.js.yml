@@ -64,8 +64,18 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Create Docker image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/infosec-2024-una-chat:latest .
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/infosec-chat:latest .
 
       - name: Push Docker image
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/infosec-2024-una-chat:latest
-      
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/infosec-chat:latest
+        
+       # Login to Azure
+      - name: 'Login to Azure'
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # Deploy Docker image to Azure Web App
+      - name: Deploy Docker image to Azure Web App
+        run: |
+          az webapp config container set --resource-group UNA-CHAT_group --name UNA-CHAT-JOSUE --container-image-name ${{ secrets.DOCKER_USERNAME }}/infosec-chat:latest
