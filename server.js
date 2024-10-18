@@ -28,7 +28,7 @@ const OKTA_ISSUER_URI = "https://dev-wg3dffyd62bk6loh.us.auth0.com";
 const OKTA_CLIENT_ID = "2qYAHuCSoo64h73nrOtzcx0nXCHQVMzC";
 const OKTA_CLIENT_SECRET = "Do0G9vQjzVA0fgwnIhgywIc-aVYqrxAToqBStVKq8oHZ5b1H6baLD2JUaYQnhXFu";
 const REDIRECT_URI = "http://localhost:3000/dashboard";
-const PORT = process.env.PORT || "8080";
+const PORT = process.env.PORT || "3000";
 const SECRET = "hjsadfghjakshdfg87sd8f76s8d7f68s7f632342ug44gg423636346f";
 
 // SSL Certificate Paths (Replace with your certificate file paths)
